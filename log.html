@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Calculator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #007bff;
+            margin-bottom: 25px;
+            font-size: 2.2em;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        input[type="text"] {
+            width: calc(100% - 24px);
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s ease-in-out;
+        }
+
+        input[type="text"]:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-bottom: 30px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        #results {
+            background-color: #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: left;
+            min-height: 100px;
+            overflow-y: auto;
+            max-height: 400px;
+            border: 1px solid #dee2e6;
+        }
+
+        .log-output {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #ced4da;
+        }
+
+        .log-output:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .log-output strong {
+            color: #28a745;
+            font-size: 1.1em;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .log-output p {
+            margin: 5px 0;
+            font-size: 0.95em;
+            color: #555;
+        }
+
+        .invalid-input {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 0.85em;
+            color: #6c757d;
+        }
+
+        .clear-button {
+            background-color: #6c757d;
+            margin-left: 10px;
+        }
+
+        .clear-button:hover {
+            background-color: #545b62;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔢 Log Calculator</h1>
+        <p>Enter numbers (space separated):</p>
+        <input type="text" id="numberInput" placeholder="e.g., 1 2.718 10">
+        <div>
+            <button id="calculateButton">button id</button>
+        </div>
+        <div id="results">
+            <!-- Results will be displayed here -->
+        </div>
+        <p class="footer">(Type 'exit', 'stop', or 'quit' to finish)</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const numberInput = document.getElementById('numberInput');
+            const calculateButton = document.getElementById('calculateButton');
+            const clearButton = document.getElementById('clearButton');
+            const resultsDiv = document.getElementById('results');
+
+            function printLogs(x) {
+                let outputHtml = '';
+                if (isNaN(x) || x <= 0) {
+                    outputHtml = `<div class="log-output invalid-input"><strong>${x}: invalid</strong> (log undefined for ≤ 0 or not a number)</div>`;
+                } else {
+                    const base = 3;
+                    const ln = Math.log(x);
+                    const log10 = Math.log10(x);
+                    const log2 = Math.log2(x);
+                    const logBase3 = ln / Math.log(base);
+                    
+                    outputHtml = `
+                        <div class="log-output">
+                            <strong>value = ${x}</strong>
+                            <p>  ln(x)        = ${ln.toFixed(6)}</p>
+                            <p>  log10(x)     = ${log10.toFixed(6)}</p>
+                            <p>  log2(x)      = ${log2.toFixed(6)}</p>
+                            <p>  log_base_${base}(x) = ${logBase3.toFixed(6)}</p>
+                        </div>
+                    `;
+                }
+                return outputHtml;
+            }
+
+            function calculateLogs() {
+                const s = numberInput.value.trim();
+                resultsDiv.innerHTML = '';
+
+                if (s.toLowerCase() === "exit" || s.toLowerCase() === "stop" || s.toLowerCase() === "quit") {
+                    resultsDiv.innerHTML = `<p style="color: #28a745; font-weight: bold;">Program finished ✅</p>`;
+                    numberInput.value = '';
+                    return;
+                }
+
+                const parts = s.split(' ').filter(part => part !== '');
+                if (parts.length === 0) {
+                    resultsDiv.innerHTML = `<p class="invalid-input">Please enter numbers separated by spaces.</p>`;
+                    return;
+                }
+
+                let allResultsHtml = '';
+                let hasInvalidInput = false;
+
+                for (const part of parts) {
+                    const n = parseFloat(part);
+                    if (isNaN(n)) {
+                        allResultsHtml += `<div class="log-output invalid-input"><strong>'${part}'</strong> is not a valid number. Please enter numbers separated by spaces.</div>`;
+                        hasInvalidInput = true;
+                    } else {
+                        allResultsHtml += printLogs(n);
+                    }
+                }
+
+                resultsDiv.innerHTML = allResultsHtml;
+                resultsDiv.scrollTop = resultsDiv.scrollHeight;
+            }
+
+            calculateButton.addEventListener('click', calculateLogs);
+
+            clearButton.addEventListener('click', () => {
+                numberInput.value = '';
+                resultsDiv.innerHTML = '';
+            });
+
+            numberInput.addEventListener('keypress', (event) => {
+                if (event.key === 'Enter') {
+                    calculateLogs();
+                }
+            });
+
+            // Auto-focus on input field when page loads
+            numberInput.focus();
+        });
+    </script>
+</body>
+</html>
+
