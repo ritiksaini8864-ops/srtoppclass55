@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Book Website</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      background: #f2f2f2;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+    }
+
+    .book {
+      background: white;
+      margin: 15px 0;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      text-align: left;
+    }
+
+    .book a {
+      text-decoration: none;
+      font-size: 18px;
+      color: blue;
+      font-weight: bold;
+    }
+
+    .book a:hover {
+      color: darkred;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <h1>📚 My Book Collection</h1>
+
+  <div class="container">
+
+    <!-- BOOK 1 -->
+    <div class="book">
+      <a href="https://drive.google.com/uc?export=view&id=1X5dr-lJH-jq678BFpRorCuzgCKLInbn3" target="_blank">
+        👉 Data Communication Book
+      </a>
+    </div>
+
+    <!-- BOOK 2 (example) -->
+    <div class="book">
+      <a href="https://drive.google.com/" target="_blank">
+        👉 DBMS Notes
+      </a>
+    </div>
+
+    <!-- BOOK 3 (example) -->
+    <div class="book">
+      <a href="https://drive.google.com/" target="_blank">
+        👉 C++ Programming Book
+      </a>
+    </div>
+
+  </div>
+
+</body>
+</html>
